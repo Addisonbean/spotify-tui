@@ -3,6 +3,7 @@ use crate::app::{
   SelectedFullAlbum, TrackTableContext,
 };
 use crate::config::ClientConfig;
+use crate::handlers::InteractivePage;
 use anyhow::anyhow;
 use rspotify::{
   client::Spotify,
@@ -1095,9 +1096,7 @@ impl<'a> Network<'a> {
     match playlists {
       Ok(p) => {
         let mut app = self.app.lock().await;
-        app.playlists = Some(p);
-        // Select the first playlist
-        app.selected_playlist_index = Some(0);
+        app.playlists = Some(InteractivePage::new(p));
       }
       Err(e) => {
         self.handle_error(anyhow!(e)).await;

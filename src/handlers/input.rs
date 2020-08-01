@@ -97,7 +97,9 @@ pub fn handler(key: Key, app: &mut App) {
       app.dispatch(IoEvent::GetSearchResults(input_str, user_country));
 
       // On searching for a track, clear the playlist selection
-      app.selected_playlist_index = Some(0);
+      if let Some(playlists) = &mut app.playlists {
+        playlists.select_first_item();
+      }
       app.push_navigation_stack(RouteId::Search, ActiveBlock::SearchResultBlock);
     }
     Key::Char(c) => {

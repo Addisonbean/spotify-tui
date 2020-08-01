@@ -1,5 +1,6 @@
 use super::user_config::UserConfig;
 use crate::network::IoEvent;
+use crate::handlers::InteractivePage;
 use anyhow::anyhow;
 use rspotify::{
   model::{
@@ -261,7 +262,7 @@ pub struct App {
   pub made_for_you_offset: u32,
   pub playlist_tracks: Option<Page<PlaylistTrack>>,
   pub made_for_you_tracks: Option<Page<PlaylistTrack>>,
-  pub playlists: Option<Page<SimplifiedPlaylist>>,
+  pub playlists: Option<InteractivePage<SimplifiedPlaylist>>,
   pub recently_played: SpotifyResultAndSelectedIndex<Option<CursorBasedPage<PlayHistory>>>,
   pub recommended_tracks: Vec<FullTrack>,
   pub recommendations_seed: String,
@@ -270,7 +271,6 @@ pub struct App {
   pub selected_album_simplified: Option<SelectedAlbum>,
   pub selected_album_full: Option<SelectedFullAlbum>,
   pub selected_device_index: Option<usize>,
-  pub selected_playlist_index: Option<usize>,
   pub size: Rect,
   pub small_search_limit: u32,
   pub song_progress_ms: u128,
@@ -350,7 +350,6 @@ impl Default for App {
       },
       song_progress_ms: 0,
       selected_device_index: None,
-      selected_playlist_index: None,
       track_table: Default::default(),
       user: None,
       instant_since_last_current_playback_poll: Instant::now(),
@@ -814,11 +813,10 @@ impl App {
   }
 
   pub fn user_unfollow_playlist(&mut self) {
-    if let (Some(playlists), Some(selected_index), Some(user)) =
-      (&self.playlists, self.selected_playlist_index, &self.user)
+    if let (Some(playlist), Some(user)) =
+      (self.playlists.as_ref().map(|p| p.selected_item()), &self.user)
     {
-      let selected_playlist = &playlists.items[selected_index];
-      let selected_id = selected_playlist.id.clone();
+      let selected_id = playlist.id.clone();
       let user_id = user.id.clone();
       self.dispatch(IoEvent::UserUnfollowPlaylist(user_id, selected_id))
     }

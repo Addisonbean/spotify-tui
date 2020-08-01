@@ -20,12 +20,14 @@ mod recently_played;
 mod search_results;
 mod select_device;
 mod track_table;
+mod interactive_page;
 
 use super::app::{ActiveBlock, App, ArtistBlock, RouteId, SearchResultBlock};
 use crate::event::Key;
 use crate::network::IoEvent;
 
 pub use input::handler as input_handler;
+pub use interactive_page::InteractivePage;
 
 pub fn handle_app(key: Key, app: &mut App) {
   // First handle any global event and then move to block event

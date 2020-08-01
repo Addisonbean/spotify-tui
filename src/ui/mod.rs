@@ -264,7 +264,7 @@ where
   B: Backend,
 {
   let playlist_items = match &app.playlists {
-    Some(p) => p.items.iter().map(|item| item.name.to_owned()).collect(),
+    Some(p) => p.items().iter().map(|item| item.name.to_owned()).collect(),
     None => vec![],
   };
 
@@ -282,7 +282,7 @@ where
     "Playlists",
     &playlist_items,
     highlight_state,
-    app.selected_playlist_index,
+    app.playlists.as_ref().map(|p| p.selected_index()),
   );
 }
 
