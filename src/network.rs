@@ -75,6 +75,7 @@ pub enum IoEvent {
   GetAlbum(String),
   SetDeviceIdInConfig(String),
   CurrentUserSavedTracksContains(Vec<String>),
+  UserAddTrackToPlaylist(String, String, String),
 }
 
 pub fn get_spotify(token_info: TokenInfo) -> (Spotify, SystemTime) {
@@ -258,6 +259,9 @@ impl<'a> Network<'a> {
       }
       IoEvent::CurrentUserSavedTracksContains(track_ids) => {
         self.current_user_saved_tracks_contains(track_ids).await;
+      }
+      IoEvent::UserAddTrackToPlaylist(user_id, track_id, playlist_id) => {
+        self.user_add_track_to_playlist(user_id, track_id, playlist_id).await;
       }
     };
 
@@ -1207,6 +1211,15 @@ impl<'a> Network<'a> {
     } else {
       println!("\nFailed to refresh authentication token");
       // TODO panic!
+    }
+  }
+
+  async fn user_add_track_to_playlist(&mut self, user_id: String, track_id: String, playlist_id: String) {
+    match self.spotify.user_playlist_add_tracks(&user_id[..], &playlist_id[..], &[track_id], None).await {
+      Ok(_) => {}
+      Err(e) => {
+        self.handle_error(anyhow!(e)).await;
+      }
     }
   }
 }

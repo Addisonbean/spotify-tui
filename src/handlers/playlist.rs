@@ -62,9 +62,15 @@ pub fn handler(key: Key, app: &mut App) {
       if let (Some(playlists), Some(selected_playlist_index)) =
         (&app.playlists, &app.selected_playlist_index)
       {
-        match &app.my_playlists_mode {
+        match app.my_playlists_mode.clone() {
           MyPlaylistsMode::AddTrack(track_id) => {
-            todo!("add it... {}", track_id)
+            if let (Some(selected_playlist), Some(user)) = (playlists.items.get(*selected_playlist_index), &app.user) {
+              let playlist_id = selected_playlist.id.to_owned();
+              let user_id = user.id.clone();
+              app.dispatch(IoEvent::UserAddTrackToPlaylist(user_id, track_id, playlist_id));
+              app.my_playlists_mode = MyPlaylistsMode::Normal;
+              app.pop_navigation_stack();
+            }
           }
           MyPlaylistsMode::Normal => {
             app.track_table.context = Some(TrackTableContext::MyPlaylists);
