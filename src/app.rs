@@ -110,6 +110,12 @@ pub enum DialogContext {
   PlaylistSearch,
 }
 
+#[derive(Clone, PartialEq, Debug)]
+pub enum MyPlaylistsMode {
+  Normal,
+  AddTrack(String),
+}
+
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub enum ActiveBlock {
   Analysis,
@@ -290,6 +296,7 @@ pub struct App {
   pub spotify_token_expiry: SystemTime,
   pub dialog: Option<String>,
   pub confirm: bool,
+  pub my_playlists_mode: MyPlaylistsMode,
 }
 
 impl Default for App {
@@ -365,6 +372,7 @@ impl Default for App {
       spotify_token_expiry: SystemTime::now(),
       dialog: None,
       confirm: false,
+      my_playlists_mode: MyPlaylistsMode::Normal,
     }
   }
 }

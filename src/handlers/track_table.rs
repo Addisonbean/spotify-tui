@@ -1,5 +1,5 @@
 use super::{
-  super::app::{App, RecommendationsContext, TrackTable, TrackTableContext},
+  super::app::{ActiveBlock, App, MyPlaylistsMode, RecommendationsContext, RouteId, TrackTable, TrackTableContext},
   common_key_events,
 };
 use crate::event::Key;
@@ -148,6 +148,15 @@ pub fn handler(key: Key, app: &mut App) {
     //recommended song radio
     Key::Char('r') => {
       handle_recommended_tracks(app);
+    }
+    Key::Char('^') => {
+      if let Some(track) = app.track_table.tracks.get(app.track_table.selected_index) {
+        if let Some(track_id) = track.id.clone() {
+          app.my_playlists_mode = MyPlaylistsMode::AddTrack(track_id);
+          app.push_navigation_stack(RouteId::Home, ActiveBlock::MyPlaylists);
+          app.set_current_route_state(None, Some(ActiveBlock::MyPlaylists));
+        }
+      }
     }
     _ => {}
   }

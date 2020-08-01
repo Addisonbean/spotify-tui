@@ -1,5 +1,5 @@
 use super::{
-  super::app::{App, DialogContext, TrackTableContext},
+  super::app::{App, DialogContext, MyPlaylistsMode, TrackTableContext},
   common_key_events,
 };
 use crate::app::ActiveBlock;
@@ -62,13 +62,20 @@ pub fn handler(key: Key, app: &mut App) {
       if let (Some(playlists), Some(selected_playlist_index)) =
         (&app.playlists, &app.selected_playlist_index)
       {
-        app.track_table.context = Some(TrackTableContext::MyPlaylists);
-        app.playlist_offset = 0;
-        if let Some(selected_playlist) = playlists.items.get(selected_playlist_index.to_owned()) {
-          let playlist_id = selected_playlist.id.to_owned();
-          app.dispatch(IoEvent::GetPlaylistTracks(playlist_id, app.playlist_offset));
+        match &app.my_playlists_mode {
+          MyPlaylistsMode::AddTrack(track_id) => {
+            todo!("add it... {}", track_id)
+          }
+          MyPlaylistsMode::Normal => {
+            app.track_table.context = Some(TrackTableContext::MyPlaylists);
+            app.playlist_offset = 0;
+            if let Some(selected_playlist) = playlists.items.get(selected_playlist_index.to_owned()) {
+              let playlist_id = selected_playlist.id.to_owned();
+              app.dispatch(IoEvent::GetPlaylistTracks(playlist_id, app.playlist_offset));
+            }
+          }
         }
-      };
+      }
     }
     Key::Char('D') => {
       if let (Some(playlists), Some(selected_index)) = (&app.playlists, app.selected_playlist_index)
