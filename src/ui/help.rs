@@ -71,6 +71,7 @@ pub fn get_help_docs() -> Vec<Vec<&'static str>> {
       "r",
       "Selected block",
     ],
+    vec!["Add song to a playlist", "^", "Selected block"],
     vec!["Play all tracks for artist", "e", "Library -> Artists"],
     vec!["Search with input text", "<Enter>", "Search input"],
     vec![
