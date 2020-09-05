@@ -23,7 +23,7 @@ mod track_table;
 
 use super::app::{ActiveBlock, App, ArtistBlock, RouteId, SearchResultBlock};
 use crate::event::Key;
-use crate::network::IoEvent;
+use crate::{app::MyPlaylistsMode, network::IoEvent};
 use rspotify::model::{context::CurrentlyPlaybackContext, PlayingItem};
 
 pub use input::handler as input_handler;
@@ -169,6 +169,9 @@ fn handle_block_events(key: Key, app: &mut App) {
 
 fn handle_escape(app: &mut App) {
   match app.get_current_route().active_block {
+    ActiveBlock::MyPlaylists => {
+      app.my_playlists_mode = MyPlaylistsMode::Normal;
+    }
     ActiveBlock::SearchResultBlock => {
       app.search_results.selected_block = SearchResultBlock::Empty;
     }

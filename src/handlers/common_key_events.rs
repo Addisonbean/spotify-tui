@@ -1,5 +1,5 @@
 use super::super::app::{ActiveBlock, App, RouteId};
-use crate::event::Key;
+use crate::{app::MyPlaylistsMode, event::Key};
 pub fn down_event(key: Key) -> bool {
   match key {
     Key::Down | Key::Char('j') | Key::Ctrl('n') => true,
@@ -100,55 +100,58 @@ pub fn on_low_press_handler<T>(selection_data: &[T]) -> usize {
 
 pub fn handle_right_event(app: &mut App) {
   match app.get_current_route().hovered_block {
-    ActiveBlock::MyPlaylists | ActiveBlock::Library => match app.get_current_route().id {
-      RouteId::AlbumTracks => {
-        app.set_current_route_state(
-          Some(ActiveBlock::AlbumTracks),
-          Some(ActiveBlock::AlbumTracks),
-        );
+    ActiveBlock::MyPlaylists | ActiveBlock::Library => {
+      app.my_playlists_mode = MyPlaylistsMode::Normal;
+      match app.get_current_route().id {
+        RouteId::AlbumTracks => {
+          app.set_current_route_state(
+            Some(ActiveBlock::AlbumTracks),
+            Some(ActiveBlock::AlbumTracks),
+          );
+        }
+        RouteId::TrackTable => {
+          app.set_current_route_state(Some(ActiveBlock::TrackTable), Some(ActiveBlock::TrackTable));
+        }
+        RouteId::Podcasts => {
+          app.set_current_route_state(Some(ActiveBlock::Podcasts), Some(ActiveBlock::Podcasts));
+        }
+        RouteId::Recommendations => {
+          app.set_current_route_state(Some(ActiveBlock::TrackTable), Some(ActiveBlock::TrackTable));
+        }
+        RouteId::AlbumList => {
+          app.set_current_route_state(Some(ActiveBlock::AlbumList), Some(ActiveBlock::AlbumList));
+        }
+        RouteId::MadeForYou => {
+          app.set_current_route_state(Some(ActiveBlock::MadeForYou), Some(ActiveBlock::MadeForYou));
+        }
+        RouteId::Artists => {
+          app.set_current_route_state(Some(ActiveBlock::Artists), Some(ActiveBlock::Artists));
+        }
+        RouteId::RecentlyPlayed => {
+          app.set_current_route_state(
+            Some(ActiveBlock::RecentlyPlayed),
+            Some(ActiveBlock::RecentlyPlayed),
+          );
+        }
+        RouteId::Search => {
+          app.set_current_route_state(
+            Some(ActiveBlock::SearchResultBlock),
+            Some(ActiveBlock::SearchResultBlock),
+          );
+        }
+        RouteId::Artist => app.set_current_route_state(
+          Some(ActiveBlock::ArtistBlock),
+          Some(ActiveBlock::ArtistBlock),
+        ),
+        RouteId::Home => {
+          app.set_current_route_state(Some(ActiveBlock::Home), Some(ActiveBlock::Home));
+        }
+        RouteId::SelectedDevice => {}
+        RouteId::Error => {}
+        RouteId::Analysis => {}
+        RouteId::BasicView => {}
       }
-      RouteId::TrackTable => {
-        app.set_current_route_state(Some(ActiveBlock::TrackTable), Some(ActiveBlock::TrackTable));
-      }
-      RouteId::Podcasts => {
-        app.set_current_route_state(Some(ActiveBlock::Podcasts), Some(ActiveBlock::Podcasts));
-      }
-      RouteId::Recommendations => {
-        app.set_current_route_state(Some(ActiveBlock::TrackTable), Some(ActiveBlock::TrackTable));
-      }
-      RouteId::AlbumList => {
-        app.set_current_route_state(Some(ActiveBlock::AlbumList), Some(ActiveBlock::AlbumList));
-      }
-      RouteId::MadeForYou => {
-        app.set_current_route_state(Some(ActiveBlock::MadeForYou), Some(ActiveBlock::MadeForYou));
-      }
-      RouteId::Artists => {
-        app.set_current_route_state(Some(ActiveBlock::Artists), Some(ActiveBlock::Artists));
-      }
-      RouteId::RecentlyPlayed => {
-        app.set_current_route_state(
-          Some(ActiveBlock::RecentlyPlayed),
-          Some(ActiveBlock::RecentlyPlayed),
-        );
-      }
-      RouteId::Search => {
-        app.set_current_route_state(
-          Some(ActiveBlock::SearchResultBlock),
-          Some(ActiveBlock::SearchResultBlock),
-        );
-      }
-      RouteId::Artist => app.set_current_route_state(
-        Some(ActiveBlock::ArtistBlock),
-        Some(ActiveBlock::ArtistBlock),
-      ),
-      RouteId::Home => {
-        app.set_current_route_state(Some(ActiveBlock::Home), Some(ActiveBlock::Home));
-      }
-      RouteId::SelectedDevice => {}
-      RouteId::Error => {}
-      RouteId::Analysis => {}
-      RouteId::BasicView => {}
-    },
+    }
     _ => {}
   };
 }

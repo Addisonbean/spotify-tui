@@ -69,7 +69,6 @@ pub fn handler(key: Key, app: &mut App) {
               let user_id = user.id.clone();
               app.dispatch(IoEvent::UserAddTrackToPlaylist(user_id, track_id, playlist_id));
               app.my_playlists_mode = MyPlaylistsMode::Normal;
-              app.pop_navigation_stack();
             }
           }
           MyPlaylistsMode::Normal => {
